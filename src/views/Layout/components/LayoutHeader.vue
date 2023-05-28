@@ -1,17 +1,8 @@
 <script setup>
-import { getCategoryAPI } from '@/apis/layout.js'
-import { onMounted, ref } from 'vue'
+import { useCategoryStore } from '@/stores/category'
 
-const categoryList = ref([])
-
-const getCategory = async () => {
-  const { result } = await getCategoryAPI()
-  categoryList.value = result
-}
-
-onMounted(() => {
-  getCategory()
-})
+// 使用pinia中请求封装的导航数据
+const categoryStore = useCategoryStore()
 </script>
 
 <template>
@@ -21,7 +12,7 @@ onMounted(() => {
         <router-link to="/">小兔鲜</router-link>
       </h1>
       <ul class="app-header-nav">
-        <li class="home" v-for="item in categoryList" :key="item.id">
+        <li class="home" v-for="item in categoryStore.categoryList" :key="item.id">
           <router-link to="/">{{ item.name }}</router-link>
         </li>
       </ul>
