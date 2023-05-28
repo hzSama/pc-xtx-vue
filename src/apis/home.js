@@ -6,3 +6,17 @@ export function getBannerAPI() {
     url: '/home/banner'
   })
 }
+
+// 获取新鲜好物数据
+export function getNewAPI() {
+  return http({
+    url: '/home/new'
+  })
+}
+
+// 获取人气推荐数据
+export function getHotAPI() {
+  return http({
+    url: '/home/hot'
+  })
+}
