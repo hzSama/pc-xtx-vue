@@ -1,8 +1,13 @@
+
+<!--产品列表无线加载功能：使用elementPlus提供的v-infinite-scroll指令监听是否满足触底条件，
+                         满足条件则让参数页数+1后再次请求数据，并拼接到goodList中即可。-->
+
 <script setup>
 import { getCategoryFilterAPI, getSubCategoryAPI } from '@/apis/category.js'
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import GoodsItem from '@/views/Home/components/GoodsItem.vue'
+import { get } from 'lodash'
 
 const $route = useRoute()
 // 获取二级面包屑数据
@@ -23,7 +28,7 @@ const reqData = ref({ // 请求数据的参数
 })
 const getGoodList = async () => {
   const { result } = await getSubCategoryAPI(reqData.value)
-  goodList.value = result.items
+  goodList.value = result.items // 新老数据拼接
 }
 onMounted(() => getGoodList())
 
@@ -31,6 +36,16 @@ onMounted(() => getGoodList())
 const tabChange = () => {
   reqData.value.page = 1
   getGoodList()
+}
+
+// 列表滚动到底部触加载
+const disabled = ref(false)
+const load = async () => {
+  reqData.value.page++
+  const { result } = await getSubCategoryAPI(reqData.value)
+  goodList.value = [...goodList.value, ...result.items] // 新老数据拼接
+  // 如果已无数据，则关闭加载
+  if (result.items.length === 0) disabled.value = true
 }
 </script>
 
@@ -53,7 +68,9 @@ const tabChange = () => {
         <el-tab-pane label="最高人气" name="orderNum"></el-tab-pane>
         <el-tab-pane label="评论最多" name="evaluateNum"></el-tab-pane>
       </el-tabs>
-      <div class="body">
+      <!--v-infinite-scroll为监听是否已滚动到底部；
+                                  :infinite-scroll-disabled为监听开关-->
+      <div class="body" v-infinite-scroll="load" :infinite-scroll-disabled="disabled">
         <!-- 商品列表-->
         <GoodsItem v-for="goods in goodList" :good="goods" :key="goods.id"></GoodsItem>
       </div>
