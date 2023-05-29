@@ -15,7 +15,7 @@ onMounted(() => getCategoryData())
 
 // 获取基础列表数据
 const goodList = ref([])
-const reqData = ref({
+const reqData = ref({ // 请求数据的参数
   categoryId: $route.params.id,
   page: 1,
   pageSize: 20,
@@ -26,6 +26,12 @@ const getGoodList = async () => {
   goodList.value = result.items
 }
 onMounted(() => getGoodList())
+
+// 切换tab执行回调
+const tabChange = () => {
+  reqData.value.page = 1
+  getGoodList()
+}
 </script>
 
 <template>
@@ -40,7 +46,9 @@ onMounted(() => getGoodList())
       </el-breadcrumb>
     </div>
     <div class="sub-container">
-      <el-tabs>
+      <!--双向绑定，点击哪个el-tab-pane，其name值自动提交给绑定的属性值-->
+      <!--@tab-change：当v-model的值变化时，执行回调-->
+      <el-tabs v-model="reqData.sortField" @tab-change="tabChange">
         <el-tab-pane label="最新商品" name="publishTime"></el-tab-pane>
         <el-tab-pane label="最高人气" name="orderNum"></el-tab-pane>
         <el-tab-pane label="评论最多" name="evaluateNum"></el-tab-pane>
