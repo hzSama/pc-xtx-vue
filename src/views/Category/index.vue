@@ -13,34 +13,15 @@
                                         在回调中执行需要数据的更新业务逻辑。-->
 
 <script setup>
-import { getTopCategoryAPI } from '@/apis/category.js'
-import { getBannerAPI } from "@/apis/home.js"
-import { onMounted, ref } from 'vue'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import GoodsItem from '@/views/Home/components/GoodsItem.vue'
+// 导入封装好的业务模块
+import { useCategory } from './composables/useCategory.js'
+import { useBanner } from './composables/useBanner.js'
 
-// 获取路由的参数实例对象，参数对象中.params.id可以获得id
-const $route = useRoute()
-// 获取面包屑数据
-const topCategory = ref({})
-const getTopCategory = async (id = $route.params.id) => {
-  const { result } = await getTopCategoryAPI(id)
-  topCategory.value = result
-}
-onMounted(() => getTopCategory())
+// 使用封装好的两个业务模块
+const { topCategory } = useCategory()
+const { bannerList } = useBanner()
 
-// 使用beforeRouteUpdate监听路由变化，在路由更新前，发起需要的数据请求
-onBeforeRouteUpdate((to) => {
-  getTopCategory(to.params.id) // to是将要访问的路由对象信息，可拿到最新的id
-})
-
-// 获取banner图数据
-const bannerList = ref([])
-const getBanner = async () => {
-  const { result } = await getBannerAPI('2')
-  bannerList.value = result
-}
-onMounted(() => getBanner())
 </script>
 
 <template>
