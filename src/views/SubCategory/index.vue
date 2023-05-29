@@ -2,12 +2,14 @@
 <!--产品列表无线加载功能：使用elementPlus提供的v-infinite-scroll指令监听是否满足触底条件，
                          满足条件则让参数页数+1后再次请求数据，并拼接到goodList中即可。-->
 
+<!--定制路由行为：在切换路由的时候，可以自动滚动到页面顶部，而不是停留在原先的位置。
+           方法：vue-router支持scrollBehavior配置项，可指定切换路由时滚动位置。-->
+
 <script setup>
 import { getCategoryFilterAPI, getSubCategoryAPI } from '@/apis/category.js'
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import GoodsItem from '@/views/Home/components/GoodsItem.vue'
-import { get } from 'lodash'
 
 const $route = useRoute()
 // 获取二级面包屑数据
@@ -69,7 +71,7 @@ const load = async () => {
         <el-tab-pane label="评论最多" name="evaluateNum"></el-tab-pane>
       </el-tabs>
       <!--v-infinite-scroll为监听是否已滚动到底部；
-                                  :infinite-scroll-disabled为监听开关-->
+                                          :infinite-scroll-disabled为监听开关-->
       <div class="body" v-infinite-scroll="load" :infinite-scroll-disabled="disabled">
         <!-- 商品列表-->
         <GoodsItem v-for="goods in goodList" :good="goods" :key="goods.id"></GoodsItem>
