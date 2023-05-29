@@ -20,3 +20,10 @@ export function getHotAPI() {
     url: '/home/hot'
   })
 }
+
+// 获取产品列表数据
+export function getProductAPI() {
+  return http({
+    url: '/home/goods'
+  })
+}
