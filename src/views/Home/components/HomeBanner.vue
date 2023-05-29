@@ -8,13 +8,8 @@ const getBanner = async () => {
   const { result } = await getBannerAPI()
   bannerList.value = result
 }
-
-onMounted(() => {
-  getBanner()
-})
+onMounted(() => getBanner())
 </script>
-
-
 
 <template>
   <div class="home-banner">
@@ -25,8 +20,6 @@ onMounted(() => {
     </el-carousel>
   </div>
 </template>
-
-
 
 <style scoped lang='scss'>
 .home-banner {

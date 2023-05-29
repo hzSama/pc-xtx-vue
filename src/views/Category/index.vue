@@ -1,11 +1,12 @@
 <script setup>
 import { getTopCategoryAPI } from '@/apis/category.js'
+import { getBannerAPI } from "@/apis/home.js"
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 // 获取路由的参数实例对象，参数对象中.params.id可以获得id
 const $route = useRoute()
-// 获取数据
+// 获取面包屑数据
 const topCategory = ref({})
 
 const getTopCategory = async () => {
@@ -13,6 +14,15 @@ const getTopCategory = async () => {
   topCategory.value = result
 }
 onMounted(() => getTopCategory())
+
+// 获取banner图数据
+const bannerList = ref([])
+
+const getBanner = async () => {
+  const { result } = await getBannerAPI('2')
+  bannerList.value = result
+}
+onMounted(() => getBanner())
 </script>
 
 <template>
@@ -24,6 +34,14 @@ onMounted(() => getTopCategory())
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item>{{ topCategory.name }}</el-breadcrumb-item>
         </el-breadcrumb>
+      </div>
+      <!--轮播图-->
+      <div class="home-banner">
+        <el-carousel height="500px">
+          <el-carousel-item v-for="item in bannerList" :key="item.id">
+            <img :src="item.imgUrl">
+          </el-carousel-item>
+        </el-carousel>
       </div>
     </div>
   </div>
@@ -106,6 +124,17 @@ onMounted(() => getTopCategory())
 
   .bread-container {
     padding: 25px 0;
+  }
+
+
+  .home-banner {
+    width: 1240px;
+    height: 500px;
+
+    img {
+      width: 100%;
+      height: 500px;
+    }
   }
 }
 </style>

@@ -1,9 +1,12 @@
 import http from '@/utils/http.js'
 
 // 获取banner图数据
-export function getBannerAPI() {
+export function getBannerAPI(distributionSite = '1') {
   return http({
-    url: '/home/banner'
+    url: '/home/banner',
+    params: {
+      distributionSite
+    }
   })
 }
 
