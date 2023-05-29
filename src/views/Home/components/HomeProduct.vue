@@ -8,7 +8,6 @@ const productList = ref([])
 
 const getProduct = async () => {
   const { result } = await getProductAPI()
-  console.log(result)
   productList.value = result
 }
 onMounted(() => { getProduct() })
