@@ -1,24 +1,41 @@
+
+<!--路由缓存问题：使用带有参数的路由时，当用户从 /category/id1 导航到 /category/id2 时，
+                 相同的组件实例将被重复使用，因为两个路由都渲染同个组件，比起销毁再创建，
+                 复用组件实例会更加高效。不过，这意味着组件的生命周期函数不会被调用(组件数据不会被更新)。-->
+
+<!--解决问题方法：
+  1.让组件实例不被复用，强制销毁重建：给路由入口router-view标签绑定一个key，值为当前路由的完整路径。
+                                    可以破坏组件实例的复用机制，强制销毁重建。
+                                    <router-view :key="$route.fullPath" />
+                              问题：整个页面都会重建(重新请求数据)，一些不需要改变的数据就会导致资源浪费。
+
+  2.监听路由变化，变化后执行数据更新操作：使用beforeRouteUpdate导航钩子，可以在每次路由更新之前执行，
+                                        在回调中执行需要数据的更新业务逻辑。-->
+
 <script setup>
 import { getTopCategoryAPI } from '@/apis/category.js'
 import { getBannerAPI } from "@/apis/home.js"
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import GoodsItem from '@/views/Home/components/GoodsItem.vue'
 
 // 获取路由的参数实例对象，参数对象中.params.id可以获得id
 const $route = useRoute()
 // 获取面包屑数据
 const topCategory = ref({})
-
-const getTopCategory = async () => {
-  const { result } = await getTopCategoryAPI($route.params.id)
+const getTopCategory = async (id = $route.params.id) => {
+  const { result } = await getTopCategoryAPI(id)
   topCategory.value = result
 }
 onMounted(() => getTopCategory())
 
+// 使用beforeRouteUpdate监听路由变化，在路由更新前，发起需要的数据请求
+onBeforeRouteUpdate((to) => {
+  getTopCategory(to.params.id) // to是将要访问的路由对象信息，可拿到最新的id
+})
+
 // 获取banner图数据
 const bannerList = ref([])
-
 const getBanner = async () => {
   const { result } = await getBannerAPI('2')
   bannerList.value = result
