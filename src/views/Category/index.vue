@@ -3,6 +3,7 @@ import { getTopCategoryAPI } from '@/apis/category.js'
 import { getBannerAPI } from "@/apis/home.js"
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import GoodsItem from '@/views/Home/components/GoodsItem.vue'
 
 // 获取路由的参数实例对象，参数对象中.params.id可以获得id
 const $route = useRoute()
@@ -42,6 +43,27 @@ onMounted(() => getBanner())
             <img :src="item.imgUrl">
           </el-carousel-item>
         </el-carousel>
+      </div>
+      <!--分类列表-->
+      <div class="sub-list">
+        <h3>全部分类</h3>
+        <ul>
+          <li v-for="i in topCategory.children" :key="i.id">
+            <RouterLink to="/">
+              <img v-img-lazy="i.picture" />
+              <p>{{ i.name }}</p>
+            </RouterLink>
+          </li>
+        </ul>
+      </div>
+      <div class="ref-goods" v-for="item in topCategory.children" :key="item.id">
+        <div class="head">
+          <h3>- {{ item.name }}-</h3>
+        </div>
+        <div class="body">
+          <!--复用GoodsItem组件-->
+          <GoodsItem v-for="good in item.goods" :good="good" :key="good.id" />
+        </div>
       </div>
     </div>
   </div>
