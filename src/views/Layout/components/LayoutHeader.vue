@@ -12,6 +12,9 @@ const categoryStore = useCategoryStore()
         <router-link to="/">小兔鲜</router-link>
       </h1>
       <ul class="app-header-nav">
+        <li class="home">
+          <router-link to="/">首页</router-link>
+        </li>
         <li class="home" v-for="item in categoryStore.categoryList" :key="item.id">
           <!--active-class为激活状态显示-->
           <router-link :to="`/category/${item.id}`" active-class="active">{{ item.name }}</router-link>
