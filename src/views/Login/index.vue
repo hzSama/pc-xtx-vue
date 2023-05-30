@@ -1,5 +1,9 @@
 <script setup>
 import { ref } from 'vue'
+import { loginAPI } from '@/apis/user.js'
+import { ElMessage } from 'element-plus'
+import 'element-plus/theme-chalk/el-message.css'
+import { useRouter } from 'vue-router'
 
 // 表单校验(element-plus组件提供的内置方式)
 // 1.准备表单对象，获取表单value值
@@ -36,10 +40,14 @@ const rules = {
 }
 // 3.点击登录，统一校验(element-plus的form组件内置方法)
 const formEl = ref(null)
+const $router = useRouter()
 const login = () => {
-  formEl.value.validate((valid) => { // valid:所有校验都通过为true
+  formEl.value.validate(async (valid) => { // valid:所有校验都通过为true
     if (valid) {
-
+      // 校验通过提交数据
+      const { result } = await loginAPI(form.value)
+      ElMessage({ type: 'success', message: '登录成功' })
+      $router.replace({ path: '/' })
     } else {
       return false
     }
