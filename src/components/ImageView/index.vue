@@ -26,7 +26,8 @@ const middle = ref(null)
 const { elementX, elementY, isOutside } = useMouseInElement(middle)
 const left = ref(0)
 const top = ref(0)
-watch([elementX, elementY], () => {
+watch([elementX, elementY, isOutside], () => {
+  if (isOutside.value) return
   // 横向逻辑
   if (elementX.value <= 100) {
     left.value = 0
@@ -62,11 +63,11 @@ watch([elementX, elementY], () => {
     <!-- 放大镜大图 -->
     <div class="large" :style="[
       {
-        backgroundImage: `url(${imageList[0]})`,
-        backgroundPositionX: `0px`,
-        backgroundPositionY: `0px`,
+        backgroundImage: `url(${imageList[activeIndex]})`,
+        backgroundPositionX: `${-(left * 2)}px`,
+        backgroundPositionY: `${-(top * 2)}px`,
       },
-    ]" v-show="false"></div>
+    ]" v-if="!isOutside"></div>
   </div>
 </template>
 
