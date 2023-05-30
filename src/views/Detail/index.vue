@@ -7,15 +7,19 @@
 import DetailHot from './components/DetailHot.vue'
 import { getDetail } from '@/apis/detail.js'
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 
 const goods = ref({})
 const $route = useRoute()
-const getGoods = async () => {
-  const { result } = await getDetail($route.params.id)
+const getGoods = async (id = $route.params.id) => {
+  const { result } = await getDetail(id)
   goods.value = result
 }
 onMounted(() => getGoods())
+
+onBeforeRouteUpdate((to) => {
+  getGoods(to.params.id)
+})
 
 // sku规格被操作时
 const skuChange = (sku) => {
@@ -122,7 +126,7 @@ const skuChange = (sku) => {
                     </li>
                   </ul>
                   <!-- 图片 -->
-                  <img v-for="img in goods.details.pictures" :key="img" :src="img" alt="">
+                  <img v-for="img in goods.details.pictures" :key="img" v-img-lazy="img" alt="">
                 </div>
               </div>
             </div>
