@@ -2,7 +2,8 @@
 <!--封装的产品详情图片预览组件-->
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useMouseInElement } from '@vueuse/core'
 
 // 图片列表
 const imageList = [
@@ -18,16 +19,38 @@ const activeIndex = ref(0)
 const enterSmall = (i) => {
   activeIndex.value = i
 }
+
+// 2.蒙层跟随鼠标移动
+const middle = ref(null)
+// 通过@vueuse/core包的此方法可以获取鼠标是否进入某元素及鼠标相对其位置
+const { elementX, elementY, isOutside } = useMouseInElement(middle)
+const left = ref(0)
+const top = ref(0)
+watch([elementX, elementY], () => {
+  // 横向逻辑
+  if (elementX.value <= 100) {
+    left.value = 0
+  } else if (elementX.value >= 300) {
+    left.value = 200
+  } else { left.value = elementX.value - 100 }
+
+  // 纵向逻辑
+  if (elementY.value <= 100) {
+    top.value = 0
+  } else if (elementY.value >= 300) {
+    top.value = 200
+  } else { top.value = elementY.value - 100 }
+})
 </script>
 
 <template>
   <div class="goods-image">
     <!-- 左侧大图-->
-    <div class="middle" ref="target">
+    <div class="middle" ref="middle">
       <!--大图的下标值与激活的小图一一对应-->
       <img :src="imageList[activeIndex]" alt="" />
       <!-- 蒙层小滑块 -->
-      <div class="layer" :style="{ left: `0px`, top: `0px` }"></div>
+      <div class="layer" :style="{ left: `${left}px`, top: `${top}px` }" v-if="!isOutside"></div>
     </div>
     <!-- 小图列表 -->
     <ul class="small">
