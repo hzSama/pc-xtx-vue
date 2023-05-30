@@ -1,9 +1,10 @@
 <script setup>
 import { ref } from 'vue'
-import { loginAPI } from '@/apis/user.js'
 import { ElMessage } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user.js'
+const userStore = useUserStore()
 
 // 表单校验(element-plus组件提供的内置方式)
 // 1.准备表单对象，获取表单value值
@@ -45,7 +46,7 @@ const login = () => {
   formEl.value.validate(async (valid) => { // valid:所有校验都通过为true
     if (valid) {
       // 校验通过提交数据
-      const { result } = await loginAPI(form.value)
+      await userStore.getUserData(form.value)
       ElMessage({ type: 'success', message: '登录成功' })
       $router.replace({ path: '/' })
     } else {
