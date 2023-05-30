@@ -5,8 +5,6 @@
 
 <script setup>
 import DetailHot from './components/DetailHot.vue'
-import ImageView from '@/components/ImageView/index.vue'
-import XtxSku from '@/components/XtxSku/index.vue'
 import { getDetail } from '@/apis/detail.js'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
