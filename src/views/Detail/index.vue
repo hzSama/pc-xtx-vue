@@ -1,4 +1,10 @@
+
+<!--问题：渲染模板时，会遇到对象的多层属性访问报错。
+          原因是模板首次渲染时，数据还未请求为一个空对象，则读取空对象里的多层数据会出错。
+    解决方法：使用v-if控制渲染时机，保证已有数据后才渲染模板。-->
+
 <script setup>
+import DetailHot from './components/DetailHot.vue'
 import { getDetail } from '@/apis/detail.js'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -7,7 +13,6 @@ const goods = ref({})
 const $route = useRoute()
 const getGoods = async () => {
   const { result } = await getDetail($route.params.id)
-  console.log(result)
   goods.value = result
 }
 onMounted(() => getGoods())
@@ -118,7 +123,10 @@ onMounted(() => getGoods())
             </div>
             <!-- 24热榜+专题推荐 -->
             <div class="goods-aside">
-
+              <!--24小时热榜-->
+              <DetailHot :hotType="1"></DetailHot>
+              <!--周榜-->
+              <DetailHot :hotType="2"></DetailHot>
             </div>
           </div>
         </div>
