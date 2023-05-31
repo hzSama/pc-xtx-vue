@@ -1,12 +1,17 @@
 <script setup>
+// 导入用户数据Pinia
+import { useUserStore } from '@/stores/user.js'
+
+const userStore = useUserStore()
 </script>
 
 <template>
   <nav class="app-topnav">
     <div class="container">
       <ul>
-        <template v-if="false">
-          <li><a href="javascript:;"><i class="iconfont icon-user"></i>周杰伦</a></li>
+        <!--适配思路：登录时显示第一块(有token)，非登录时显示第二块(无Token)。-->
+        <template v-if="userStore.userData.token">
+          <li><a href="javascript:;"><i class="iconfont icon-user"></i>{{ userStore.userData.account }}</a></li>
           <li>
             <el-popconfirm title="确认退出吗？" confirm-button-text="确认" cancel-button-text="取消">
               <template #reference>
