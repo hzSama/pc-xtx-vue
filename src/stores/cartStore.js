@@ -27,9 +27,9 @@ export const useCartStore = defineStore('cart', () => {
     cartList.value = newList
   }
 
-  // 计算属性计算购物车商品总数
+  // 计算属性计算头部购物车商品总数
   const total = computed(() => cartList.value.reduce((res, item) => res + item.count, 0))
-  // 计算属性计算购物车商品总价
+  // 计算属性计算头部购物车商品总价
   const totalPrice = computed(() => {
     return cartList.value.reduce((res, item) => res + (((item.price * 100) * item.count) / 100), 0)
   })
@@ -47,6 +47,18 @@ export const useCartStore = defineStore('cart', () => {
     cartList.value.forEach((item) => item.selected = selected)
   }
 
+  // 计算属性计算列表购物车选中商品总数
+  const listTotal = computed(() => {
+    const selectedList = cartList.value.filter((item) => item.selected)
+    return selectedList.reduce((res, item) => res + item.count, 0)
+  })
+  // 计算属性计算列表购物车选中商品总价
+  const listTotalPrice = computed(() => {
+    const selectedList = cartList.value.filter((item) => item.selected)
+    return selectedList.reduce((res, item) => res + (((item.price * 100) * item.count) / 100), 0)
+  })
+
+
   return {
     cartList,
     addCart,
@@ -55,6 +67,8 @@ export const useCartStore = defineStore('cart', () => {
     totalPrice,
     checkChange,
     isAll,
-    allCheckChange
+    allCheckChange,
+    listTotal,
+    listTotalPrice
   }
 }, { persist: true })
