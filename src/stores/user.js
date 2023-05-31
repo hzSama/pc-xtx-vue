@@ -13,15 +13,20 @@ import { loginAPI } from '@/apis/user.js'
 
 export const useUserStore = defineStore('user', () => {
 
-  const userData = ref([])
+  const userData = ref({})
 
   const getUserData = async ({ account, password }) => {
     const { result } = await loginAPI({ account, password })
     userData.value = result
   }
+
+  const clearUserData = () => {
+    userData.value = {}
+  }
   return {
     userData,
-    getUserData
+    getUserData,
+    clearUserData
   }
 }, { persist: true })
 // { persist: true }为数据持久化配置项

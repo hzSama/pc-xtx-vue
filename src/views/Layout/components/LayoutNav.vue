@@ -1,8 +1,15 @@
 <script setup>
+import { useRouter } from 'vue-router'
 // 导入用户数据Pinia
 import { useUserStore } from '@/stores/user.js'
-
 const userStore = useUserStore()
+
+// 退出登录
+const $router = useRouter()
+const logout = () => {
+  userStore.clearUserData()   // 清除用户信息
+  $router.push('/login') // 跳转到登录页
+}
 </script>
 
 <template>
@@ -13,7 +20,8 @@ const userStore = useUserStore()
         <template v-if="userStore.userData.token">
           <li><a href="javascript:;"><i class="iconfont icon-user"></i>{{ userStore.userData.account }}</a></li>
           <li>
-            <el-popconfirm title="确认退出吗？" confirm-button-text="确认" cancel-button-text="取消">
+            <!--element-plus组件内置事件@confirm-->
+            <el-popconfirm @confirm="logout" title="确认退出吗？" confirm-button-text="确认" cancel-button-text="取消">
               <template #reference>
                 <a href="javascript:;">退出登录</a>
               </template>
