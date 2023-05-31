@@ -31,3 +31,12 @@ export const delCartAPI = (ids) => {
     }
   })
 }
+
+// 登录合并本地购物车数据到购物车接口数据
+export const mergeCartAPI = (data) => {
+  return http({
+    url: '/member/cart/merge',
+    method: 'POST',
+    data
+  })
+}

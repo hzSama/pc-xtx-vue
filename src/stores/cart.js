@@ -14,6 +14,12 @@ export const useCartStore = defineStore('cart', () => {
   const userStore = useUserStore()
   const isLogin = computed(() => userStore.userData.token)
 
+  // 封装一个从接口获取购物车数据并渲染方法
+  const updateCartList = async () => {
+    const { result } = await getNewCartListAPI() // 获取新购物车数据
+    cartList.value = result // 重新渲染数据
+  }
+
   // cartList数据
   const cartList = ref([])
   // 添加到购物车操作
@@ -21,8 +27,7 @@ export const useCartStore = defineStore('cart', () => {
     if (isLogin.value) {
       // 已登录逻辑
       await insertCartAPI({ skuId: goods.skuId, count: goods.count }) // 调用添加商品接口
-      const { result } = await getNewCartListAPI() // 获取新购物车数据
-      cartList.value = result // 重新渲染数据
+      updateCartList()
     } else {
       // 未登录逻辑
       // 在已有数据中寻找是否存在新添加的商品id，若有商品已存在购物车则添加数量，反之push整条新商品数据。
@@ -39,8 +44,7 @@ export const useCartStore = defineStore('cart', () => {
   const delCart = async (skuId) => {
     if (isLogin.value) {
       await delCartAPI([skuId]) // 调用删除商品接口
-      const { result } = await getNewCartListAPI() // 获取新购物车数据
-      cartList.value = result // 重新渲染数据
+      updateCartList()
     } else {
       const newList = cartList.value.filter((item) => item.skuId !== skuId)
       cartList.value = newList
@@ -94,6 +98,7 @@ export const useCartStore = defineStore('cart', () => {
     allCheckChange,
     listTotal,
     listTotalPrice,
-    clearCartList
+    clearCartList,
+    updateCartList
   }
 }, { persist: true })
