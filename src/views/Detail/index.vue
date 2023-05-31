@@ -4,10 +4,12 @@
     解决方法：使用v-if控制渲染时机，保证已有数据后才渲染模板。-->
 
 <script setup>
+import { ElMessage } from 'element-plus'
 import DetailHot from './components/DetailHot.vue'
 import { getDetail } from '@/apis/detail.js'
 import { onMounted, ref } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
+import { useCartStore } from '@/stores/cartStore.js'
 
 const goods = ref({})
 const $route = useRoute()
@@ -16,14 +18,39 @@ const getGoods = async (id = $route.params.id) => {
   goods.value = result
 }
 onMounted(() => getGoods())
-
 onBeforeRouteUpdate((to) => {
   getGoods(to.params.id)
 })
 
 // sku规格被操作时
+let skuObj = {}
 const skuChange = (sku) => {
   console.log(sku)
+  // 选项选择全的话获得一个信息对象sku，否则获得空对象
+  skuObj = sku
+}
+
+// 改变数量count
+const count = ref(1)
+const countChange = (count) => { }
+
+// 点击添加购物车
+const cartStore = useCartStore()
+const addCart = () => {
+  if (skuObj.skuId) {
+    cartStore.addCart({
+      id: goods.value.id,
+      name: goods.value.name,
+      picture: goods.value.mainPictures[0],
+      price: goods.value.price,
+      count: count.value,
+      skuId: skuObj.skuId,
+      attrsText: skuObj.specsText,
+      selected: true
+    })
+  } else {
+    ElMessage.warning('请选择规格')
+  }
 }
 </script>
 
@@ -100,10 +127,13 @@ const skuChange = (sku) => {
               <!-- sku组件 -->
               <XtxSku :goods="goods" @change="skuChange"></XtxSku>
               <!-- 数据组件 -->
-
+              <div class="count">
+                <span>数量</span>
+                <el-input-number v-model="count" :min="1" @change="countChange" />
+              </div>
               <!-- 按钮组件 -->
               <div>
-                <el-button size="large" class="btn">
+                <el-button size="large" class="btn" @click="addCart">
                   加入购物车
                 </el-button>
               </div>
@@ -375,9 +405,21 @@ const skuChange = (sku) => {
   }
 }
 
-.btn {
-  margin-top: 20px;
+.count {
+  display: flex;
+  padding-left: 10px;
 
+  span {
+    display: block;
+    width: 50px;
+    line-height: 32px;
+    color: #999;
+  }
+}
+
+.btn {
+  margin-top: 30px;
+  margin-left: 60px;
 }
 
 .bread-container {
