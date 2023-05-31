@@ -32,12 +32,18 @@ export const useCartStore = defineStore('cart', () => {
     return cartList.value.reduce((res, item) => res + (((item.price * 100) * item.count) / 100), 0)
   })
 
+  // 点击单选按钮操作
+  const checkChange = (i, selected) => {
+    const item = cartList.value.find((item) => item.skuId === i.skuId)
+    item.selected = selected
+  }
 
   return {
     cartList,
     addCart,
     delCart,
     total,
-    totalPrice
+    totalPrice,
+    checkChange
   }
 }, { persist: true })

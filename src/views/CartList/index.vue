@@ -1,6 +1,15 @@
 <script setup>
 import { useCartStore } from '@/stores/cartStore.js'
 const cartStore = useCartStore()
+
+// 单选按钮change事件
+/**
+ * @param {*} i :操作的单选按钮对应的那项
+ * @param {*} selected :点击后的状态
+ */
+const check = (i, selected) => {
+  cartStore.checkChange(i, selected)
+}
 </script>
 
 <template>
@@ -24,7 +33,9 @@ const cartStore = useCartStore()
           <tbody>
             <tr v-for="i in cartStore.cartList" :key="i.id">
               <td>
-                <el-checkbox />
+                <!--v-model就是 :model-value + @change 的语法糖。为了方便进行命令式操作，现在回退到原始模式。-->
+                <!--selected为本组件的change事件的默认参数，若需有额外传递自己的参数则需要改造成回调形式。-->
+                <el-checkbox :model-value="i.selected" @change="(selected) => check(i, selected)" />
               </td>
               <td>
                 <div class="goods">
