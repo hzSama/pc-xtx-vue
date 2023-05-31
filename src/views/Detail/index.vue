@@ -9,7 +9,7 @@ import DetailHot from './components/DetailHot.vue'
 import { getDetail } from '@/apis/detail.js'
 import { onMounted, ref } from 'vue'
 import { useRoute, onBeforeRouteUpdate } from 'vue-router'
-import { useCartStore } from '@/stores/cartStore.js'
+import { useCartStore } from '@/stores/cart.js'
 
 const goods = ref({})
 const $route = useRoute()
