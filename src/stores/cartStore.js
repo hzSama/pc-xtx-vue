@@ -20,11 +20,13 @@ export const useCartStore = defineStore('cart', () => {
       cartList.value.push(goods)
     }
   }
+
   // 购物车删除项操作
   const delCart = (skuId) => {
     const newList = cartList.value.filter((item) => item.skuId !== skuId)
     cartList.value = newList
   }
+
   // 计算属性计算购物车商品总数
   const total = computed(() => cartList.value.reduce((res, item) => res + item.count, 0))
   // 计算属性计算购物车商品总价
@@ -38,12 +40,21 @@ export const useCartStore = defineStore('cart', () => {
     item.selected = selected
   }
 
+  // 通过计算属性计算单选按钮是否全部选中 并与 全选按钮绑定属性
+  const isAll = computed(() => cartList.value.every((item) => item.selected))
+  // 点击全选按钮操作
+  const allCheckChange = (selected) => {
+    cartList.value.forEach((item) => item.selected = selected)
+  }
+
   return {
     cartList,
     addCart,
     delCart,
     total,
     totalPrice,
-    checkChange
+    checkChange,
+    isAll,
+    allCheckChange
   }
 }, { persist: true })
