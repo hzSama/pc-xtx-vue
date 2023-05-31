@@ -3,6 +3,7 @@ import { useUserStore } from "@/stores/user"
 import axios from "axios"
 import { ElMessage } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
+import { useRouter } from "vue-router"
 
 const http = axios.create({
   baseURL: 'http://pcapi-xiaotuxian-front-devtest.itheima.net',
@@ -24,9 +25,18 @@ http.interceptors.request.use(config => {
 }, e => Promise.reject(e))
 
 // axios响应拦截器
+/* token失效处理：用户一段时间不操作，token会失效。使用失效的token去发起请求，接口会报401错误，需要我们做相应处理。
+                  在响应拦截器做统一的处理。 */
 http.interceptors.response.use(res => res.data, e => {
+  const useStore = useUserStore()
+  const $router = useRouter()
   // 统一错误提示
   ElMessage({ type: 'warning', message: e.response.data.message })
+  // 若是401token失效错误则做额外处理
+  if (e.response.status === 401) {
+    useStore.clearUserData()
+    $router.push('/login')
+  }
   return Promise.reject(e)
 })
 
