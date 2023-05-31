@@ -6,7 +6,7 @@
            是：接口购物车操作(所有操作直接走接口，操作完毕获取购物车列表更新本地购物车)。 */
 
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export const useCartStore = defineStore('cart', () => {
   const cartList = ref([])
@@ -25,10 +25,19 @@ export const useCartStore = defineStore('cart', () => {
     const newList = cartList.value.filter((item) => item.skuId !== skuId)
     cartList.value = newList
   }
+  // 计算属性计算购物车商品总数
+  const total = computed(() => cartList.value.reduce((res, item) => res + item.count, 0))
+  // 计算属性计算购物车商品总价
+  const totalPrice = computed(() => {
+    return cartList.value.reduce((res, item) => res + (((item.price * 100) * item.count) / 100), 0)
+  })
+
 
   return {
     cartList,
     addCart,
-    delCart
+    delCart,
+    total,
+    totalPrice
   }
 }, { persist: true })
