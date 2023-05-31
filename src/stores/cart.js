@@ -78,6 +78,10 @@ export const useCartStore = defineStore('cart', () => {
     return selectedList.reduce((res, item) => res + (((item.price * 100) * item.count) / 100), 0)
   })
 
+  // 退出登录清除本地购物车数据
+  const clearCartList = () => {
+    cartList.value = []
+  }
 
   return {
     cartList,
@@ -89,6 +93,7 @@ export const useCartStore = defineStore('cart', () => {
     isAll,
     allCheckChange,
     listTotal,
-    listTotalPrice
+    listTotalPrice,
+    clearCartList
   }
 }, { persist: true })
