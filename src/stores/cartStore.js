@@ -7,17 +7,31 @@
 
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { useUserStore } from './user.js'
+import { insertCartAPI, getNewCartListAPI } from '@/apis/cart.js'
 
 export const useCartStore = defineStore('cart', () => {
+  const userStore = useUserStore()
+  const isLogin = computed(() => userStore.userData.token)
+
+  // cartList数据
   const cartList = ref([])
   // 添加到购物车操作
-  const addCart = (goods) => {
-    // 在已有数据中寻找是否存在新添加的商品id，若有商品已存在购物车则添加数量，反之push整条新商品数据。
-    const item = cartList.value.find((item) => goods.skuId === item.skuId)
-    if (item) {
-      item.count += goods.count
+  const addCart = async (goods) => {
+    if (isLogin) {
+      // 已登录逻辑
+      await insertCartAPI({ skuId: goods.skuId, count: goods.count })
+      const { result } = await getNewCartListAPI() // 获取新购物车数据
+      cartList.value = result // 重新渲染数据
     } else {
-      cartList.value.push(goods)
+      // 未登录逻辑
+      // 在已有数据中寻找是否存在新添加的商品id，若有商品已存在购物车则添加数量，反之push整条新商品数据。
+      const item = cartList.value.find((item) => goods.skuId === item.skuId)
+      if (item) {
+        item.count += goods.count
+      } else {
+        cartList.value.push(goods)
+      }
     }
   }
 
