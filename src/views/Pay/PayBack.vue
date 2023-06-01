@@ -10,7 +10,6 @@ const getOrderInfo = async () => {
   orderInfo.value = result
 }
 onMounted(() => getOrderInfo())
-
 </script>
 
 <template>
