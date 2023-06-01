@@ -8,7 +8,6 @@ const checkInfo = ref({})
 const curAddress = ref({}) // 默认地址
 const getCheckInfo = async () => {
   const { result } = await getCheckInfoAPI()
-  console.log(result)
   checkInfo.value = result
   // 选出默认地址信息
   const item = checkInfo.value.userAddresses.find((item) => item.isDefault === 0)
@@ -104,7 +103,7 @@ const createOrder = async () => {
                   </a>
                 </td>
                 <td>&yen;{{ i.price }}</td>
-                <td>{{ i.price }}</td>
+                <td>{{ i.count }}</td>
                 <td>&yen;{{ i.totalPrice }}</td>
                 <td>&yen;{{ i.totalPayPrice }}</td>
               </tr>

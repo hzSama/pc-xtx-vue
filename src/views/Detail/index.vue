@@ -25,7 +25,6 @@ onBeforeRouteUpdate((to) => {
 // sku规格被操作时
 let skuObj = {}
 const skuChange = (sku) => {
-  console.log(sku)
   // 选项选择全的话获得一个信息对象sku，否则获得空对象
   skuObj = sku
 }

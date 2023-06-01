@@ -6,12 +6,17 @@ import LayoutFixed from './components/LayoutFixed.vue'
 
 import { useCategoryStore } from '@/stores/category'
 import { onMounted } from 'vue'
+import { useCartStore } from '@/stores/cart.js'
 
 // 调用pinia封装好的请求导航数据方法
 const categoryStore = useCategoryStore()
 onMounted(() => {
   categoryStore.getCategory()
+  cartStore.updateCartList()
 })
+
+const cartStore = useCartStore()
+
 </script>
 
 <template>

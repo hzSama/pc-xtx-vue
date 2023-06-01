@@ -8,7 +8,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useUserStore } from './user.js'
-import { insertCartAPI, getNewCartListAPI, delCartAPI } from '@/apis/cart.js'
+import { insertCartAPI, getNewCartListAPI, delCartAPI, changeSelectedAPI, changeSelectedAllAPI } from '@/apis/cart.js'
 
 export const useCartStore = defineStore('cart', () => {
   const userStore = useUserStore()
@@ -59,16 +59,26 @@ export const useCartStore = defineStore('cart', () => {
   })
 
   // 点击单选按钮操作
-  const checkChange = (i, selected) => {
-    const item = cartList.value.find((item) => item.skuId === i.skuId)
-    item.selected = selected
+  const checkChange = async (i, selected) => {
+    if (isLogin.value) {
+      await changeSelectedAPI({ skuId: i.skuId, selected })
+      updateCartList()
+    } else {
+      const item = cartList.value.find((item) => item.skuId === i.skuId)
+      item.selected = selected
+    }
   }
 
   // 通过计算属性计算单选按钮是否全部选中 并与 全选按钮绑定属性
   const isAll = computed(() => cartList.value.every((item) => item.selected))
   // 点击全选按钮操作
-  const allCheckChange = (selected) => {
-    cartList.value.forEach((item) => item.selected = selected)
+  const allCheckChange = async (selected) => {
+    if (isLogin.value) {
+      await changeSelectedAllAPI(cartList.value.map(item => item.skuId), selected)
+      updateCartList()
+    } else {
+      cartList.value.forEach((item) => item.selected = selected)
+    }
   }
 
   // 计算属性计算列表购物车选中商品总数
