@@ -1,11 +1,14 @@
 <script setup>
-import { getCheckInfoAPI } from '@/apis/checkout.js'
+import { getCheckInfoAPI, createOrderAPI } from '@/apis/checkout.js'
+import { useRouter } from 'vue-router'
 import { onMounted, ref } from 'vue'
+import { useCartStore } from '@/stores/cart.js'
 
 const checkInfo = ref({})
 const curAddress = ref({}) // 默认地址
 const getCheckInfo = async () => {
   const { result } = await getCheckInfoAPI()
+  console.log(result)
   checkInfo.value = result
   // 选出默认地址信息
   const item = checkInfo.value.userAddresses.find((item) => item.isDefault === 0)
@@ -27,6 +30,30 @@ const comfirmChange = () => {
     curAddress.value = activeAddress.value
     showDialog.value = false
   } else return showDialog.value = false
+}
+
+// 点击提交订单事件
+const $router = useRouter()
+const cartStore = useCartStore()
+const createOrder = async () => {
+  const { result } = await createOrderAPI({
+    deliveryTimeType: 1,
+    payType: 1,
+    payChannel: 1,
+    buyerMessage: '',
+    goods: checkInfo.value.goods.map(item => {
+      return {
+        skuId: item.skuId,
+        count: item.count
+      }
+    }),
+    addressId: curAddress.value.id
+  })
+  // 得到请求返回的id进行跳转
+  const orderId = result.id
+  $router.push({ path: 'pay', query: { id: orderId } })
+  // 更新购物车数据
+  cartStore.updateCartList()
 }
 </script>
 
@@ -122,7 +149,7 @@ const comfirmChange = () => {
         </div>
         <!-- 提交订单 -->
         <div class="submit">
-          <el-button type="primary" size="large">提交订单</el-button>
+          <el-button type="primary" size="large" @click="createOrder">提交订单</el-button>
         </div>
       </div>
     </div>
