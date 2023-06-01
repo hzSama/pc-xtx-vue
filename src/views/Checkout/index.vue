@@ -15,6 +15,19 @@ onMounted(() => getCheckInfo())
 
 // 控制弹框打开
 const showDialog = ref(false)
+
+// 切换地址弹框激活项
+const activeAddress = ref({})
+const getActiveAddr = (activeItem) => {
+  activeAddress.value = activeItem
+}
+// 切换地址
+const comfirmChange = () => {
+  if (activeAddress.value.id) {
+    curAddress.value = activeAddress.value
+    showDialog.value = false
+  } else return showDialog.value = false
+}
 </script>
 
 <template>
@@ -117,7 +130,8 @@ const showDialog = ref(false)
   <!-- 切换地址 -->
   <el-dialog v-model="showDialog" title="切换收货地址" width="30%" center>
     <div class="addressWrapper">
-      <div class="text item" v-for="item in checkInfo.userAddresses" :key="item.id">
+      <div class="text item" v-for="item in checkInfo.userAddresses" :key="item.id" @click="getActiveAddr(item)"
+        :class="{ active: item.id === activeAddress.id }">
         <ul>
           <li><span>收<i />货<i />人：</span>{{ item.receiver }} </li>
           <li><span>联系方式：</span>{{ item.contact }}</li>
@@ -128,7 +142,7 @@ const showDialog = ref(false)
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="showDialog = false">取消</el-button>
-        <el-button type="primary">确定</el-button>
+        <el-button type="primary" @click="comfirmChange">确定</el-button>
       </span>
     </template>
   </el-dialog>
