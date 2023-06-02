@@ -37,6 +37,9 @@ const pageChange = (page) => {
   params.value.page = page
   getOrderList()
 }
+
+// 订单状态适配
+const stateMap = ['待付款', '待发货', '待收货', '待评价', '已完成', '已取消']
 </script>
 
 <template>
@@ -82,7 +85,7 @@ const pageChange = (page) => {
                 </ul>
               </div>
               <div class="column state">
-                <p>{{ order.orderState }}</p>
+                <p>{{ stateMap[order.orderState - 1] }}</p>
                 <p v-if="order.orderState === 3">
                   <a href="javascript:;" class="green">查看物流</a>
                 </p>
