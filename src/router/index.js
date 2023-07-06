@@ -14,6 +14,8 @@ import PayBack from '@/views/Pay/PayBack.vue'
 import Member from '@/views/Member/index.vue'
 import UserInfo from '@/views/Member/components/UserInfo.vue'
 import UserOrder from '@/views/Member/components/UserOrder.vue'
+import { useUserStore } from "@/stores/user"
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,12 +26,13 @@ const router = createRouter({
         { path: '/category/:id', component: Category },
         { path: '/category/sub/:id', component: SubCategory }, // 同属二级路由，因为同样是在Layout的router-view中显示
         { path: '/detail/:id', component: Detail },
-        { path: '/cartlist', component: CartList },
-        { path: '/checkout', component: Checkout },
-        { path: '/pay', component: Pay },
-        { path: '/paycallback', component: PayBack },
+        { path: '/cartlist', component: CartList, meta: { requirtAuth: true } },
+        { path: '/checkout', component: Checkout, meta: { requirtAuth: true } },
+        { path: '/pay', component: Pay, meta: { requirtAuth: true } },
+        { path: '/paycallback', component: PayBack, meta: { requirtAuth: true } },
         {
-          path: '/member', component: Member, redirect: '/member/user', children: [
+          path: '/member', component: Member, redirect: '/member/user', meta: { requirtAuth: true },
+          children: [
             { path: 'user', component: UserInfo },
             { path: 'order', component: UserOrder }
           ]
@@ -41,6 +44,20 @@ const router = createRouter({
   // 路由滚动行为配置项
   scrollBehavior() {
     return { top: 0 }
+  }
+})
+
+// 路由拦截(路由导航守卫)
+router.beforeEach((to, from, next) => {
+  const useStore = useUserStore()
+  if (to.meta.requirtAuth) {
+    if (useStore.userData.token) {
+      next()
+    } else {
+      next('/login')
+    }
+  } else {
+    next()
   }
 })
 

@@ -12,7 +12,7 @@ import { useCartStore } from '@/stores/cart.js'
 const categoryStore = useCategoryStore()
 onMounted(() => {
   categoryStore.getCategory()
-  cartStore.updateCartList()
+  if (cartStore.isLogin) { cartStore.updateCartList() }
 })
 
 const cartStore = useCartStore()
