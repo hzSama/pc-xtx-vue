@@ -35,5 +35,27 @@ export default defineConfig({
                          @use "@/styles/var.scss" as *;`,
       }
     }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'group-member': [
+            '@/views/Member/index.vue',
+            '@/views/Member/components/UserInfo.vue',
+            '@/views/Member/components/UserOrder.vue',
+          ],
+          'group-category': [
+            '@/views/Category/index.vue'
+          ],
+          'group-subcategory': [
+            '@/views/SubCategory/index.vue'
+          ],
+          'group-detail': [
+            '@/views/Detail/index.vue'
+          ]
+        }
+      }
+    }
   }
 })
