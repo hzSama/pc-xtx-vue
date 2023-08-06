@@ -27,6 +27,7 @@ http.interceptors.request.use(config => {
 // axios响应拦截器
 /* token失效处理：用户一段时间不操作，token会失效。使用失效的token去发起请求，接口会报401错误，需要我们做相应处理。
                   在响应拦截器做统一的处理。 */
+
 http.interceptors.response.use(res => res.data, e => {
   const useStore = useUserStore()
   const $router = useRouter()
