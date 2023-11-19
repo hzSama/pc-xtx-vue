@@ -1,7 +1,8 @@
 
 <!--问题：渲染模板时，会遇到对象的多层属性访问报错。
           原因是模板首次渲染时，数据还未请求为一个空对象，则读取空对象里的多层数据会出错。
-    解决方法：使用v-if控制渲染时机，保证已有数据后才渲染模板。-->
+    解决方法:1.可选链语法 ?.   
+             2.v-if手动控制渲染时机，保证已有数据后才渲染这部分。-->
 
 <script setup>
 import { ElMessage } from 'element-plus'
@@ -57,6 +58,7 @@ const addCart = () => {
   <div class="xtx-goods-page">
     <div class="container" v-if="goods.categories">
       <!--面包屑导航-->
+
       <div class="bread-container">
         <el-breadcrumb separator=">">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>

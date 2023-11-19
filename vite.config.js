@@ -40,19 +40,30 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
+          'group-layout': [
+            '@/views/Layout/index.vue',
+            '@/views/Home/index.vue',
+            '@/views/CartList/index.vue'
+          ],
+          'group-login': [
+            '@/views/Login/index.vue'
+          ],
           'group-member': [
             '@/views/Member/index.vue',
             '@/views/Member/components/UserInfo.vue',
             '@/views/Member/components/UserOrder.vue',
           ],
           'group-category': [
-            '@/views/Category/index.vue'
-          ],
-          'group-subcategory': [
+            '@/views/Category/index.vue',
             '@/views/SubCategory/index.vue'
           ],
           'group-detail': [
-            '@/views/Detail/index.vue'
+            '@/views/Detail/index.vue',
+            '@/views/Checkout/index.vue'
+          ],
+          'group-pay': [
+            '@/views/Pay/index.vue',
+            '@/views/Pay/PayBack.vue'
           ]
         }
       }
